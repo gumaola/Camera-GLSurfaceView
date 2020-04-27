@@ -1,2 +1,2 @@
-include ':app', ':camerapractice', ':camera2practice', ':cameraxpractice'
-rootProject.name='GLCameraDemo'
+include ':app'
+rootProject.name = 'GLCameraDemo'
