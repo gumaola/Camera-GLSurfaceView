@@ -19,9 +19,9 @@ import javax.microedition.khronos.opengles.GL10;
 import cn.nano.camerademo.R;
 import cn.nano.camerademo.cameraV1.CameraV1Interface;
 
-import static android.opengl.GLES20.GL_FRAMEBUFFER;
-import static android.opengl.GLES20.glBindFramebuffer;
+import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
+
 
 public class EmptyEngine implements GLSurfaceView.Renderer {
 
@@ -128,6 +128,8 @@ public class EmptyEngine implements GLSurfaceView.Renderer {
                 surfaceView.requestRender();
             }
         });
+
+
     }
 
     @Override
@@ -142,16 +144,21 @@ public class EmptyEngine implements GLSurfaceView.Renderer {
             surfaceTexture.getTransformMatrix(transformMatrix);
         }
 
+
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         GLES20.glUseProgram(programHandle);
 
         vertexPositionHandle = GLES20.glGetAttribLocation(programHandle, "avVertex");
-        vertexMatrixHandle = GLES20.glGetUniformLocation(programHandle, "umTransformMatrix");
-        texureOESHandle = GLES20.glGetUniformLocation(programHandle, "usTextureOes");
         vertexCoordinateHandle = GLES20.glGetAttribLocation(programHandle, "avVertexCoordinate");
 
-        GLES20.glVertexAttribPointer(vertexHandle, 2, GLES20.GL_FLOAT, false, 8, vertexBuffer);
+
+        vertexMatrixHandle = GLES20.glGetUniformLocation(programHandle, "umTransformMatrix");
+        texureOESHandle = GLES20.glGetUniformLocation(programHandle, "usTextureOes");
+
+
+        GLES20.glVertexAttribPointer(vertexPositionHandle, 2, GLES20.GL_FLOAT, false, 8, vertexBuffer);
         GLES20.glVertexAttribPointer(vertexCoordinateHandle, 2, GLES20.GL_FLOAT, false, 8, vertexOrederBuffer);
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -164,7 +171,8 @@ public class EmptyEngine implements GLSurfaceView.Renderer {
         GLES20.glEnableVertexAttribArray(vertexCoordinateHandle);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
 
-//        GLES20.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        GLES20.glDisableVertexAttribArray(vertexPositionHandle);
+        GLES20.glDisableVertexAttribArray(vertexCoordinateHandle);
     }
 
 
