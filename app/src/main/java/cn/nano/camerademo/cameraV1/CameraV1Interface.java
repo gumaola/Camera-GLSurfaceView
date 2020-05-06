@@ -11,7 +11,9 @@ import android.view.WindowManager;
 
 import java.util.List;
 
-public class CameraV1Interface {
+import cn.nano.camerademo.base.ICamera;
+
+public class CameraV1Interface implements ICamera {
 
     private Context context;
     private SurfaceTexture surfaceTexture;
@@ -24,21 +26,8 @@ public class CameraV1Interface {
 
     private boolean isInPreviewing;
 
-    public void startPreviewOnTexture(SurfaceTexture texture) {
-        if (isInPreviewing) {
-            return;
-        }
-        surfaceTexture = texture;
-        try {
-            opendCamera.setPreviewTexture(texture);
-            opendCamera.startPreview();
-            isInPreviewing = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-
+    @Override
     public void stop() {
         try {
             opendCamera.release();
@@ -78,8 +67,8 @@ public class CameraV1Interface {
         }
     }
 
-    public static void setCameraDisplayOrientation(Activity activity,
-                                                   int cameraId, android.hardware.Camera camera) {
+    private static void setCameraDisplayOrientation(Activity activity,
+                                                    int cameraId, android.hardware.Camera camera) {
         android.hardware.Camera.CameraInfo info =
                 new android.hardware.Camera.CameraInfo();
         android.hardware.Camera.getCameraInfo(cameraId, info);
@@ -110,39 +99,19 @@ public class CameraV1Interface {
         }
         camera.setDisplayOrientation(result);
     }
-
-    private Camera.Size filteBestPreviewSize(Camera.Parameters parameters) {
-        List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        int screenWidth = 0;
-        int screenHeight = 0;
-        if (wm != null) {
-            Display display = wm.getDefaultDisplay();
-            display.getMetrics(metrics);
-            screenWidth = Math.min(metrics.widthPixels, metrics.heightPixels);
-            screenHeight = Math.max(metrics.widthPixels, metrics.heightPixels);
+    
+    @Override
+    public void startPreviewOnTexture(SurfaceTexture texture) {
+        if (isInPreviewing) {
+            return;
         }
-
-        if (screenWidth == 0 || screenHeight == 0) {
-            return null;
+        surfaceTexture = texture;
+        try {
+            opendCamera.setPreviewTexture(texture);
+            opendCamera.startPreview();
+            isInPreviewing = true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        int bestWidth = 0;
-        int bestHeight = 0;
-        Camera.Size bestSize = null;
-        for (Camera.Size size : sizes) {
-            if (size.width >= screenWidth//预览宽大于输出宽
-                    && size.height >= screenHeight//预览高大于输出高
-                    && (size.width * size.height < bestWidth * bestHeight || 0 == bestWidth * bestHeight)) {//选择像素最少的分辨率
-                bestWidth = size.width;
-                bestHeight = size.height;
-                bestSize = size;
-            }
-        }
-
-        return bestSize;
     }
-
 }

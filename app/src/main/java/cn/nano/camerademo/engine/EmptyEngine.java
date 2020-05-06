@@ -17,7 +17,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import cn.nano.camerademo.R;
-import cn.nano.camerademo.cameraV1.CameraV1Interface;
+import cn.nano.camerademo.base.ICamera;
 
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
@@ -40,7 +40,7 @@ public class EmptyEngine implements GLSurfaceView.Renderer {
     private int texureOESHandle;
     private int vertexCoordinateHandle;
 
-    private CameraV1Interface opendCamera;
+    private ICamera opendCamera;
 
     private GLSurfaceView surfaceView;
 
@@ -67,7 +67,7 @@ public class EmptyEngine implements GLSurfaceView.Renderer {
 
     private float[] transformMatrix = new float[16];
 
-    public EmptyEngine(Context c, CameraV1Interface camera, GLSurfaceView surface) {
+    public EmptyEngine(Context c, ICamera camera, GLSurfaceView surface) {
         context = c;
         opendCamera = camera;
         surfaceView = surface;
